@@ -13,7 +13,7 @@ namespace ConsoleApp1
         {
 
 
-            /*System.IO.File.WriteAllLines(@"C:\Users\***\Documents\Testausgabe\Test.txt", Program.TimeStamp());*/
+            /*System.IO.File.WriteAllLines(@"C:\Users\stendal_b1.DEV\Documents\Testausgabe\Test.txt", Program.TimeStamp());*/
 
             for (int counter = 0; counter < 3; counter++)
             {
@@ -21,8 +21,10 @@ namespace ConsoleApp1
                 System.Threading.Thread.Sleep(1100);
             }
 
+            Program.ReadDateTime();
+
             Console.WriteLine($"Hello World {Program.TimeStamp()[0]}");
-            /*Console.ReadKey();*/
+            Console.ReadKey();
         }
 
         static string[] TimeStamp()
@@ -33,11 +35,21 @@ namespace ConsoleApp1
 
         static void WriteDateTime()
         {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\***\Documents\Testausgabe\Test.txt", true))
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\stendal_b1.DEV\Documents\Testausgabe\Test.txt", true))
                 {
                     file.WriteLine(Program.TimeStamp()[0] + " " + Program.TimeStamp()[1]);
                 }
         }
+
+        static void ReadDateTime()
+        {
+            string[] lines = System.IO.File.ReadAllLines(@"C:\Users\stendal_b1.DEV\Documents\Testausgabe\Test.txt");
+            foreach (string line in lines)
+            {
+                Console.WriteLine("\t" + line);
+            }
+        }
+
 
     }
 }
