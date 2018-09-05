@@ -1,0 +1,44 @@
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp1
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+
+
+            /*System.IO.File.WriteAllLines(@"C:\Users\***\Documents\Testausgabe\Test.txt", Program.TimeStamp());*/
+
+            for (int counter = 0; counter < 3; counter++)
+            {
+                Program.WriteDateTime();
+                System.Threading.Thread.Sleep(1100);
+            }
+
+            Console.WriteLine($"Hello World {Program.TimeStamp()[0]}");
+            /*Console.ReadKey();*/
+        }
+
+        static string[] TimeStamp()
+        {
+            string[] LogTime = { DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString() };
+            return LogTime;
+        }
+
+        static void WriteDateTime()
+        {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\***\Documents\Testausgabe\Test.txt", true))
+                {
+                    file.WriteLine(Program.TimeStamp()[0] + " " + Program.TimeStamp()[1]);
+                }
+        }
+
+    }
+}
+
