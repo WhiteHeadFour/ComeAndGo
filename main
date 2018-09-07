@@ -1,56 +1,114 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Diagnostics;
 using System.Linq;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1
+namespace ServiceTrial
 {
-    class Program
+    public partial class Service1 : ServiceBase
     {
-        static void Main(string[] args)
+        public Service1()
         {
-
-
-            /*System.IO.File.WriteAllLines(@"C:\Users\stendal_b1.DEV\Documents\Testausgabe\Test.txt", Program.TimeStamp());*/
-
-            for (int counter = 0; counter < 3; counter++)
-            {
-                Program.WriteDateTime();
-                System.Threading.Thread.Sleep(1100);
-            }
-
-            Program.ReadDateTime();
-
-            Console.WriteLine($"Hello World {Program.TimeStamp()[0]}");
-            Console.ReadKey();
+            this.CanHandleSessionChangeEvent = true;
+            InitializeComponent();
         }
 
-        static string[] TimeStamp()
+        protected override void OnStart(string[] args)
         {
-            string[] LogTime = { DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString() };
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter($@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\daily.log", true))
+            {
+                file.WriteLine(Service1.TimeStamp()[0] + "," + DailyLogVerarbeitung.TimeToMinute() + "," + "true");
+            }
+        }
+
+        protected override void OnStop()
+        {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter($@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\daily.log", true))
+            {
+                file.WriteLine(Service1.TimeStamp()[0] + "," + DailyLogVerarbeitung.TimeToMinute() + "," + "false");
+            }
+        }
+
+        protected override void OnShutdown()
+        {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter($@"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\daily.log", true))
+            {
+                file.WriteLine(Service1.TimeStamp()[0] + "," + DailyLogVerarbeitung.TimeToMinute() + "," + "false");
+            }
+        }
+
+        protected override void OnSessionChange(SessionChangeDescription changeDescription)
+        {
+            System.Console.WriteLine($"{changeDescription.Reason}");
+            if (changeDescription.Reason == SessionChangeReason.SessionLock)
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter($@"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\daily.log", true))
+                {
+                    file.WriteLine(Service1.TimeStamp()[0] + "," + DailyLogVerarbeitung.TimeToMinute() + "," + "false");
+                }
+            }
+            else if (changeDescription.Reason == SessionChangeReason.SessionUnlock)
+            {
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter($@"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\daily.log", true))
+                {
+                    file.WriteLine(Service1.TimeStamp()[0] + "," + DailyLogVerarbeitung.TimeToMinute() + "," + "true");
+                }
+            }
+        }
+
+        public static string[] TimeStamp()
+        {
+            string[] LogTime = { DateTime.Now.ToShortDateString(), DateTime.Now.ToLongTimeString() };
             return LogTime;
         }
 
-        static void WriteDateTime()
+    }
+
+    public class DailyLogVerarbeitung
+    {
+        public static bool CheckNeuertag(string aktuellerTag)
         {
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\stendal_b1.DEV\Documents\Testausgabe\Test.txt", true))
-                {
-                    file.WriteLine(Program.TimeStamp()[0] + " " + Program.TimeStamp()[1]);
-                }
+            System.Threading.Thread.Sleep(100);
+            return true;
         }
 
-        static void ReadDateTime()
+        public static void DailyInDataSchreiben(string firtLogin, string lastLogin, string saldo)
         {
-            string[] lines = System.IO.File.ReadAllLines(@"C:\Users\stendal_b1.DEV\Documents\Testausgabe\Test.txt");
-            foreach (string line in lines)
-            {
-                Console.WriteLine("\t" + line);
-            }
+            System.Threading.Thread.Sleep(100);
         }
 
+        public static void Leeren()
+        {
+            System.Threading.Thread.Sleep(100);
+        }
 
+        public static void SchreibenInData()
+        {
+            System.Threading.Thread.Sleep(100);
+        }
+
+        public static string TimeToMinute()
+        {
+            string[] TimeShort = DateTime.Now.ToShortTimeString().Split(':');
+            int HoursInMinutes = Int32.Parse(TimeShort[0]) * 60 + Int32.Parse(TimeShort[1]);
+            return HoursInMinutes.ToString();
+        }
+
+        public static string FindFirstLogin()
+        {
+            System.Threading.Thread.Sleep(100);
+            return "null";
+        }
+
+        public static string FindLastLogin()
+        {
+            System.Threading.Thread.Sleep(100);
+            return "null";
+        }
     }
 }
-
